@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+spotipy = "==2.4.4"
+firebase-admin = "==2.9.0"
+Flask = "==0.10"
+django = ""
+psycopg2 = "*"
+nltk = "*"
+numpy = "*"
+python-Levenshtein-wheels = "*"
+
+[requires]
+python_version = "3.7"
