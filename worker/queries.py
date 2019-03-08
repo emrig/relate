@@ -1,5 +1,5 @@
 from datetime import timedelta
-from discover.models import Entity, Document, Cluster
+from discover.models import Entity, Document, Cluster, ChildEntity
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
@@ -8,8 +8,9 @@ from django.db.models import Count
 BATCH_SIZE = 500
 TIME_THRESH = 10
 
+# TODO: If doc already exists
 def insert_docs(docs):
-    entries = [Document(path=x['path'], file_name=x['file_name'], status=0) for x in docs]
+    entries = [Document(path=x['path'], file_name=x['file_name'], status=x['status'], text=x['text']) for x in docs]
     Document.objects.bulk_create(entries, batch_size=BATCH_SIZE)
 
 def num_docs_to_proc():
@@ -38,8 +39,7 @@ def insert_entities(entities, doc):
                 if len(entity['name']) <= Entity._meta.get_field('name').max_length:
                     obj, created = Entity.objects.get_or_create(
                         type=entity['type'],
-                        name=entity['name'],
-                        defaults={'alias': entity['name']}
+                        name=entity['name']
                     )
                     obj.documents.add(doc)
             doc.status = 1
@@ -68,15 +68,23 @@ def get_clusters(type):
     return [(cluster, cluster.entities.all()) for cluster in clusters]
 
 @transaction.atomic
-def merge_cluster(cluster, alias):
+def merge_cluster(cluster, name, type):
+    documents = []
+    parent = Entity(name=name, type=type)
+    parent.save()
     for entity in cluster.entities.all():
-        entity.alias = alias
-        entity.save()
+        documents += entity.documents.all()
+        obj = ChildEntity(name=entity.name, type=entity.type, entity=parent)
+        obj.save()
+        entity.delete()
+    # Drop any duplicates
+    documents = list(set(documents))
+    parent.documents.set(documents)
     cluster.status = 'MERGED'
     cluster.save()
 
 def get_related_entities(entity, type):
-    entities = Entity.objects.filter(documents__entity=entity).filter(type=type)
+    entities = Entity.objects.filter(documents__entity=entity).filter(type=type, visible=True)
     return entities
 
 def get_related_docs(entities):
