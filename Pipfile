@@ -6,14 +6,12 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-spotipy = "==2.4.4"
-firebase-admin = "==2.9.0"
-Flask = "==0.10"
-django = ""
-psycopg2 = "*"
-nltk = "*"
-numpy = "*"
-python-Levenshtein-wheels = "*"
+Django = "==2.1.7"
+psycopg2 = "==2.7.7"
+nltk = "==3.4"
+numpy = "==1.16.2"
+python-Levenshtein-wheels = "==0.13.1"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.7"

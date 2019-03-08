@@ -1,0 +1,77 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:10.4
+    restart: always
+    environment:
+      POSTGRES_USER: relate
+      POSTGRES_PASSWORD: relate
+      POSTGRES_DB: relate
+      POSTGRES_NAME: relate
+    networks: [ 'dev' ]
+    ports: [ '35729:5432' ]
+
+  worker:
+    image: workerbase:latest
+    build: .
+    volumes:
+      - ./:/app/:rw
+      - ../enron:/app/enron/:rw
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: relate
+      POSTGRES_PASSWORD: relate
+      POSTGRES_DB: relate
+      POSTGRES_NAME: relate
+      POSTGRES_PORT: 5432
+    depends_on: [ 'db' ]
+    networks: [ 'dev' ]
+    links:
+      - "db:database"
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py parse_docs 0"'
+
+  filegetter:
+    image: workerbase:latest
+    build: .
+    volumes:
+      - ./:/app/:rw
+      - ../enron:/app/enron/:rw
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: relate
+      POSTGRES_PASSWORD: relate
+      POSTGRES_DB: relate
+      POSTGRES_NAME: relate
+      POSTGRES_PORT: 5432
+    networks: [ 'dev' ]
+    depends_on: [ 'db' ]
+    links:
+      - 'db:database'
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py load_docs 1"'
+
+  backend:
+    image: workerbase:latest
+    build: .
+    volumes:
+      - ./:/app/:rw
+      - ../enron:/app/enron/:rw
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: relate
+      POSTGRES_PASSWORD: relate
+      POSTGRES_DB: relate
+      POSTGRES_NAME: relate
+      POSTGRES_PORT: 5432
+    networks: [ 'dev' ]
+    depends_on: [ 'db' ]
+    ports: [ '8000:8000' ]
+    links:
+      - 'db:database'
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py runserver 0.0.0.0:8000"'
+
+networks:
+  dev: {}
+
+volumes:
+  files: {}
