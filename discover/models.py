@@ -19,13 +19,18 @@ class Document(models.Model):
 
 class Entity(models.Model):
     name = models.CharField(max_length=300)
-    alias = models.CharField(max_length=300)
     type = models.CharField(max_length=20)
     documents = models.ManyToManyField(Document)
+    visible = models.BooleanField(default=True)
 
     @property
     def num_docs(self):
         return self.documents.count()
+
+class ChildEntity(models.Model):
+    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
+    name = models.CharField(max_length=300)
+    type = models.CharField(max_length=20)
 
 """
 class FoundIn(models.Model):
@@ -45,4 +50,6 @@ class Cluster(models.Model):
     count = models.IntegerField()
     status = models.CharField(max_length=20)
     algorithm = models.CharField(max_length=20)
+
+
 
