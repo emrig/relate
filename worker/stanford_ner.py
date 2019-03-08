@@ -5,10 +5,7 @@ from nltk.corpus import stopwords
 from collections import Counter
 import os
 import re
-from discover.models import Entity, Document, Cluster
-from datetime import datetime
 from worker.queries import insert_entities
-from django.utils import timezone
 
 nltk.download('stopwords')
 nltk.download('punkt')

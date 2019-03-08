@@ -187,8 +187,8 @@ class Clustering:
             objs = []
             group = cluster[0]
             count = cluster[1]
-            for alias in group:
-                objs += self.obj_map[alias]
+            for name in group:
+                objs += self.obj_map[name]
             clusters.append({
                 'entities': objs,
                 'count': count,
