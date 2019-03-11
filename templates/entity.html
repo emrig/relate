@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+<head></head>
+
+<body id="page-top">
+
+    {% block pagecontent %}
+    <!-- Begin Page Content -->
+    {% load static %}
+    <script src="{%  static "js/EntitySelection.js" %}"></script>
+    <script>
+        const selectedEntity = ({{ selected_entity | safe }})
+        if (Object.keys(selectedEntity).length > 0) {
+            addEntity(selectedEntity.id, selectedEntity.name, selectedEntity.type)
+        }
+    </script>
+
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Entities</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+      </div>
+
+      <!-- Content Row -->
+
+        <div class="row">
+          <!-- DataTables Example -->
+          <div class="card shadow mb-4" style="width: 100%">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Selected Entities</h6>
+            <div class="card-body">
+                <div class="selected-entities"></div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+      <div class="row">
+          <!-- DataTables Example -->
+          <div class="card shadow mb-4" style="width: 100%">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Entities</h6>
+            <div class="card-body">
+                <div id="tableButtonGroup" class="btn-group-toggle" data-toggle="buttons" style="padding-bottom: 10px">
+                  <button type="button" class="btn btn-success" autofocus="true">All</button>
+                  <button type="button" value="PERSON" class="btn btn-primary">People</button>
+                  <button type="button" value="ORGANIZATION" class="btn btn-danger">Organization</button>
+                  <button type="button" value="LOCATION" class="btn btn-info">Places</button>
+                </div>
+              <div class="table-responsive">
+                <table class="table table-bordered" id="entitySelectTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Number of Documents</th>
+                      <th>Type</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="row">
+          <!-- DataTables Example -->
+          <div class="card shadow mb-4" style="width: 100%">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Documents entities found in</h6>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="documentTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Document Name</th>
+                      <th>Path</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- End of Main Content -->
+    </div>
+ {% endblock %}
+    <!-- Page level plugins -->
+</body>
+
