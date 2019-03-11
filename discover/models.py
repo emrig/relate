@@ -32,17 +32,6 @@ class ChildEntity(models.Model):
     name = models.CharField(max_length=300)
     type = models.CharField(max_length=20)
 
-"""
-class FoundIn(models.Model):
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
-    """
-
-"""
-class FoundIn(models.Model):
-    entity = models.ManyToManyField(Entity, on_delete=models.CASCADE)
-    document = models.ManyToManyField(Document, on_delete=models.CASCADE)
-"""
 
 class Cluster(models.Model):
     entities = models.ManyToManyField(Entity)

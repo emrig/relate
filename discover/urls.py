@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import homePageView, HomePageTemplateView
+from .views import *
+from rest_framework import routers
 
 urlpatterns = [
-    #path('', homePageView, name='home'),
-    path('', HomePageTemplateView.as_view(), name='home')
+    path('', dashboard_view, name='dashboard'),
+    path('entity', entity_view, name='entity'),
+    path('entity/api', entity_table_api, name='entity_api'),
+    path('document/api', document_table_api, name='document_api'),
+    path('entity/related', get_related_entities, name='related_entities'),
+    path('entity/delete', delete_entities, name='delete_entities'),
+    path('resolve', get_clusters, name='resolve'),
+    path('resolve/api', cluster_table_api, name='resolve_api'),
+    path('resolve/api/merge', merge_cluster_api, name='merge_cluster_api'),
 ]
