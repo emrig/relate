@@ -11,7 +11,6 @@ const entityColors = {
 }
 
 $(document).ready(function() {
-
   entitySelectTable = $('#entitySelectTable').DataTable({
         "paging": true,
     "serverSide": true,
@@ -23,7 +22,7 @@ $(document).ready(function() {
       datatype: "json",
       data: function(d){
             d.type = selectedType
-            d.parents = selectedEntities
+            d.parents = getEntityIds()
         return { "args": JSON.stringify(d) };
       }
     }
@@ -63,7 +62,11 @@ $(document).ready(function() {
         const name = row[0]
         const type = row[2]
         const id = row[3]
-        addEntity(id, name, type)
+
+        const entity = {id: id, name: name, type: type}
+
+        addEntity(entity)
+        addEntityButtons()
     });
 
     documentTable = $('#documentTable').DataTable({
@@ -76,7 +79,7 @@ $(document).ready(function() {
             datatype: "json",
             order: [[ 1, "desc" ]],
             data: function(d){
-                d.parents = selectedEntities
+                d.parents = getEntityIds()
             return { "args": JSON.stringify(d) };}
         },
         "columnDefs": [
@@ -105,32 +108,48 @@ $(document).ready(function() {
         selectedType = value;
         entitySelectTable.draw()
       });
+
+    addEntityButtons()
+
 });
 
 function removeEntity(id) {
     for( var i = 0; i < selectedEntities.length; i++){
-       if ( selectedEntities[i] === id) {
+       if ( parseInt(selectedEntities[i].id) === parseInt(id)) {
          selectedEntities.splice(i, 1)
        }
     }
-    $(`#${id}`).remove()
+    $(`#button-${id}`).remove()
     entitySelectTable.draw()
     documentTable.draw()
 }
 
 
-// TODO fix query_param bug
-function addEntity(id, name, type) {
-    selectedEntities.push(id);
-    const className = entityColors[type]
-
-    $('.selected-entities').append(
-        `<button type="button" style="margin: 2px" onclick="removeEntity(${id})" id="${id}" class="${className}" autocomplete="off"> \
-          ${name} \
-        </button>`)
-
-    entitySelectTable.draw()
-    documentTable.draw()
+function addEntity(entity) {
+    selectedEntities.push(entity);
 }
 
+function addEntityButtons() {
 
+    selectedEntities.forEach(function (entity) {
+        const className = entityColors[entity.type]
+
+        if ($(`#button-${entity.id}`).length == 0) {
+             $('.selected-entities').append(
+                `<button type="button" style="margin: 2px" onclick="removeEntity(${entity.id})" id="button-${entity.id}" class="${className}" autocomplete="off"> \
+                  ${entity.name} \
+                </button>`)
+        }
+    })
+
+        entitySelectTable.draw()
+        documentTable.draw()
+}
+
+function getEntityIds() {
+    let ids = []
+    selectedEntities.forEach(function(entity) {
+        ids.push(parseInt(entity.id))
+    })
+    return ids
+}
