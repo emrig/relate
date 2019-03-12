@@ -1,10 +1,6 @@
 var selectedType = null
-var selectedEntities = []
 var topTable
 
-function setEntities(entities) {
-    selectedEntities = entities
-}
 
 $(document).ready(function() {
   topTable = $('#topTable').DataTable({
@@ -18,7 +14,7 @@ $(document).ready(function() {
       datatype: "json",
       data: function(d){
             d.type = selectedType
-            d.parents = entities
+            d.parents = typeof entities !== 'undefined' ? entities : []
             d.doc_table = true
         return { "args": JSON.stringify(d) };
       }
