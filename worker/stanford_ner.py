@@ -3,6 +3,7 @@ from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from collections import Counter
+from relate.settings import TYPES, NER_BATCH_SIZE
 import os
 import re
 from worker.queries import insert_entities
@@ -10,8 +11,6 @@ from worker.queries import insert_entities
 nltk.download('stopwords')
 nltk.download('punkt')
 
-# Types of entities to store
-labels = ['PERSON', 'LOCATION', 'ORGANIZATION']
 #stopset = set(stopwords.words('english'))
 
 # regex pattern to clean named entities (keeps only letters, numbers and _)
@@ -39,7 +38,7 @@ def stan_parse(docs):
 	classified_docs = st.tag_sents(tokenized_docs)
 
 	# Extract Named Entities [[(446, ('Charles', 'PERSON')), .. ], ... ])]
-	entities = [[(x, y) for x, y in enumerate(classified_text) if y[1] in labels] for classified_text in classified_docs]
+	entities = [[(x, y) for x, y in enumerate(classified_text) if y[1] in TYPES] for classified_text in classified_docs]
 
 	# Iterate through each doc
 	for idx, ent in enumerate(entities):
@@ -137,14 +136,14 @@ def match_names(ents):
 	ie: "These words appear the most between these 2 entities"
 """
 def get_tokens(tokens):
-	tokens = [clean_named_entity(x[0]) for x in tokens if x[1] not in labels and x[0] not in stopset and (len(x[0]) > 1 or x[0].isalpha())]
+	tokens = [clean_named_entity(x[0]) for x in tokens if x[1] not in TYPES and x[0] not in stopset and (len(x[0]) > 1 or x[0].isalpha())]
 	return " ".join(tokens).lower()
 
 """
 	Generate token count per document
 """
 def token_counter(tokens):
-	tokens = [clean_named_entity(x[0]) for x in tokens if x[1] not in labels and x[0] not in stopset and (len(x[0]) > 1 or x[0].isalpha())]
+	tokens = [clean_named_entity(x[0]) for x in tokens if x[1] not in TYPES and x[0] not in stopset and (len(x[0]) > 1 or x[0].isalpha())]
 	#tokens = [x[0] for x in tokens]
 	result = Counter()
 	for token in set(tokens):

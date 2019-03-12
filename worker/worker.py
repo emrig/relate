@@ -2,41 +2,22 @@
 from django.utils import timezone
 from worker.stanford_ner import stan_parse
 from worker.queries import num_docs_to_proc, get_docs_to_proc
+from relate.settings import NER_BATCH_SIZE
 from time import sleep
 from discover.models import Entity, Document, Cluster
 
-BATCH_SIZE = 500
 MAX_ENT_LENGTH = 10
-
-def get_file_text(docs):
-    docs_to_proc = []
-    for doc in docs:
-        try:
-            if not doc.text:
-                with open(doc.path, 'r') as f:
-                    text = f.read()
-                    doc.text = text
-                    doc.save()
-                docs_to_proc.append(doc)
-        # Error reading file
-        except Exception as err:
-            print(doc.path, err)
-            doc.status = -2
-            doc.save()
-    return docs_to_proc
-
 
 def process_batch():
     t1 = timezone.now()
     print('Files left: ', num_docs_to_proc())
 
-    docs = get_docs_to_proc(BATCH_SIZE)
-    docs = get_file_text(docs)
+    docs = get_docs_to_proc(NER_BATCH_SIZE)
 
     if docs:
         stan_parse(docs)
         t2 = timezone.now()
-        print('Batch size ', BATCH_SIZE, 'Time: ', str(t2 - t1))
+        print('Batch size ', NER_BATCH_SIZE, 'Time: ', str(t2 - t1))
 
 def parse():
     print('Parsing Docs')
@@ -47,20 +28,3 @@ def parse():
         process_batch()
 
     print('Total parse time: ', (timezone.now() - t3))
-
-    """
-    print('Clustering PERSON')
-    t1 = datetime.now()
-    db.infer_clusters('lev_slide', 'PERSON')
-    print(datetime.now() - t1)
-
-    print('Clustering ORGANIZATION')
-    t1 = datetime.now()
-    db.infer_clusters('lev_slide', 'ORGANIZATION')
-    print(datetime.now() - t1)
-
-    print('Clustering LOCATION')
-    t1 = datetime.now()
-    db.infer_clusters('lev_slide', 'LOCATION')
-    print(datetime.now() - t1)
-    """
