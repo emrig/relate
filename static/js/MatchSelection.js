@@ -1,8 +1,7 @@
-var topTable
 var selectedType = null
 
 $(document).ready(function() {
-  topTable = $('#matchesTable').DataTable({
+  const resolveTable = $('#matchesTable').DataTable({
         "paging": true,
     "serverSide": true,
     "processing": true,
@@ -54,8 +53,8 @@ $(document).ready(function() {
     ]});
 
   $('#matchesTable tbody').on( 'click', 'button', function () {
-    var row = topTable.row( $(this).parents('tr') ).data();
-    const values = topTable.$('input')
+    var row = resolveTable.row( $(this).parents('tr') ).data();
+    const values = resolveTable.$('input')
     var tr = $(this).closest("tr");
     var rowindex = tr.index();
     const type = row[2]
@@ -75,7 +74,7 @@ $(document).ready(function() {
                 alert("Merge Successful");
             }
         })
-        topTable.draw()
+        resolveTable.draw()
     } else {
         alert('Please enter a new name.')
     }})
@@ -84,6 +83,6 @@ $(document).ready(function() {
         var thisBtn = $(this);
         var value = thisBtn.val();
         selectedType = value;
-        topTable.draw()
+        resolveTable.draw()
       });
 });
