@@ -4,13 +4,10 @@ from django.views.generic import TemplateView, CreateView
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from django.core import serializers
-from .serializers import EntitySerializer, ClusterSerializer, EntityPageSerializer
+from .serializers import EntitySerializer, ClusterSerializer
 from .models import Entity, Document, Cluster
-from relate.settings import TYPES
 from worker import queries
-from django.template.response import TemplateResponse
 import json
-from collections import OrderedDict
 
 NUM_TOP_ENTITIES = 10
 
@@ -175,5 +172,3 @@ def delete_entities(request):
     result = Entity.objects.filter(id__in=ids).update(visible=False)
 
     return HttpResponse('SUCCESS')
-
-
