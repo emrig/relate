@@ -1,7 +1,13 @@
 var selectedType = null
+var selectedEntities = []
+var topTable
+
+function setEntities(entities) {
+    selectedEntities = entities
+}
 
 $(document).ready(function() {
-  const topTable = $('#topTable').DataTable({
+  topTable = $('#topTable').DataTable({
         "paging": true,
     "serverSide": true,
     "processing": true,
@@ -12,6 +18,8 @@ $(document).ready(function() {
       datatype: "json",
       data: function(d){
             d.type = selectedType
+            d.parents = entities
+            d.doc_table = true
         return { "args": JSON.stringify(d) };
       }
     }

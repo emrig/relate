@@ -28,4 +28,5 @@ urlpatterns = [
     path('resolve', get_clusters, name='resolve'),
     path('resolve/api', cluster_table_api, name='resolve_api'),
     path('resolve/api/merge', merge_cluster_api, name='merge_cluster_api'),
+    path('document', document_view, name='document_view')
 ]

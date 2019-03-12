@@ -30,9 +30,10 @@ def entity_table_api(request):
     type = args.get('type', None)
     columns = args.get('columns')
     parents = args.get('parents', None)
+    doc_table = args.get('doc_table', None)
 
     recordsTotal, recordsFiltered, data = \
-        queries.get_entities_for_table(columns, order, start_idx, page_size, search_term, type, parents)
+        queries.get_entities_for_table(columns, order, start_idx, page_size, search_term, type, parents, doc_table)
 
     ret = {}
     ret['draw'] = args['draw']
@@ -117,6 +118,26 @@ def entity_view(request):
         ret['selected_entity']['type'] = request.query_params.get('type', None)
         ret['selected_entity'] = json.dumps(ret['selected_entity'])
     return render(request, 'entity.html', context=ret)
+
+@api_view(['GET'])
+#@renderer_classes((JSONRenderer,))
+def document_view(request):
+    # Returns statistics about the document workspace
+    ret = {'document': {}}
+    path = request.query_params.get('path', None)
+
+    if path:
+        ret['document']['path'] = path
+        ret['document']['file_name'] = request.query_params.get('file_name', None)
+        doc = Document.objects.get(path=path)
+    else:
+        doc = Document.objects.all()[0]
+
+    ret['document']['text'] = doc.text
+    ret['document']['entities'] = [EntitySerializer(entity) for entity in doc.entity_set.all()]
+    ret['document']['selected_entities'] = [entity.id for entity in doc.entity_set.all()]
+
+    return render(request, 'document.html', context=ret)
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))

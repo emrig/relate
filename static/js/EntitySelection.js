@@ -109,6 +109,13 @@ $(document).ready(function() {
         entitySelectTable.draw()
       });
 
+    $('#documentTable tbody').on( 'click', 'button', function () {
+        var row = documentTable.row( $(this).parents('tr') ).data();
+        const fileName = row[0]
+        const path = row[1]
+        window.location = `document?file_name=${fileName}&path=${path}`
+    });
+
     addEntityButtons()
 
 });
