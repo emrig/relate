@@ -3,7 +3,7 @@ from datetime import datetime
 from worker.load_docs_from_dir import get_file_paths, get_file_text
 from worker.queries import insert_docs
 from relate.settings import DOC_DIR, FILE_READ_BATCH_SIZE, TYPES, CLUSTERING_ALGORITHM
-from discover.models import Entity, Cluster
+from discover.models import Entity, Cluster, Document
 from worker import queries
 import os
 from worker.worker import parse
@@ -18,6 +18,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         directory = os.path.abspath(DOC_DIR)
         print(f'Scanning Documents in {directory}', kwargs['status'])
+
 
         t1 = datetime.now()
         docs = get_file_paths(directory)

@@ -15,8 +15,8 @@ def insert_docs(docs):
     #entries = [Document(path=x['path'], file_name=x['file_name'], status=x['status'], text=x['text']) for x in docs]
     #Document.objects.bulk_create(entries, batch_size=BATCH_SIZE)
     for doc in docs:
-        Document.objects.get_or_create(doc)
-
+        obj, created = Document.objects.get_or_create(
+            path=doc['path'], file_name=doc['file_name'], status=doc['status'], text=doc['text'])
     return
 
 def num_docs_to_proc():
