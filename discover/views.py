@@ -11,7 +11,6 @@ import json
 
 NUM_TOP_ENTITIES = 10
 
-
 class HomePageTemplateView(TemplateView):
     template_name = 'dashboard.html'
 

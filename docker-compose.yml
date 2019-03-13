@@ -17,7 +17,7 @@ services:
     build: .
     volumes:
       - ./:/app/:rw
-      - ../enron:/app/enron/:rw
+      - ./documents:/app/documents/:rw
     environment:
       POSTGRES_HOST: db
       POSTGRES_USER: relate
@@ -29,33 +29,14 @@ services:
     networks: [ 'dev' ]
     links:
       - "db:database"
-    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py parse_docs 0"'
-
-  filegetter:
-    image: workerbase:latest
-    build: .
-    volumes:
-      - ./:/app/:rw
-      - ../enron:/app/enron/:rw
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_USER: relate
-      POSTGRES_PASSWORD: relate
-      POSTGRES_DB: relate
-      POSTGRES_NAME: relate
-      POSTGRES_PORT: 5432
-    networks: [ 'dev' ]
-    depends_on: [ 'db' ]
-    links:
-      - 'db:database'
-    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py load_docs 1"'
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py load_docs 0"'
 
   backend:
     image: workerbase:latest
     build: .
     volumes:
       - ./:/app/:rw
-      - ../enron:/app/enron/:rw
+      - ../documents:/app/documents/:rw
     environment:
       POSTGRES_HOST: db
       POSTGRES_USER: relate
@@ -68,7 +49,7 @@ services:
     ports: [ '8000:8000' ]
     links:
       - 'db:database'
-    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py runserver 0.0.0.0:8000"'
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"'
 
 networks:
   dev: {}

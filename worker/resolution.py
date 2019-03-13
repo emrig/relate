@@ -4,8 +4,7 @@ from datetime import datetime
 import numpy as np
 from Levenshtein import ratio, distance
 
-# Arbitrary threshold for Jaro distance. I will experiment with this number and
-# different types of clustering overall for my Master's project
+
 jaro_thresh = 0.8
 fingerprint_thresh = 2
 lev_thresh = 0.9
@@ -16,16 +15,11 @@ lev_slide = 13
 
 """
 Creates a matrix of potential matches for each entity in the database if distance is above threshold
-
-TODO: Can cut process time in half by storing scores for each word getting prepared, now n^2
-
-Need to pip install python-Levenshtein-wheels
 """
 
 """
     input: entities = [(entity, doc_id)]
 """
-
 class Clustering:
     def __init__(self, algorithm, type):
         self.algorithm_mapping = {

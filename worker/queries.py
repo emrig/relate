@@ -12,8 +12,12 @@ TIME_THRESH = 10
 
 # TODO: If doc already exists
 def insert_docs(docs):
-    entries = [Document(path=x['path'], file_name=x['file_name'], status=x['status'], text=x['text']) for x in docs]
-    Document.objects.bulk_create(entries, batch_size=BATCH_SIZE)
+    #entries = [Document(path=x['path'], file_name=x['file_name'], status=x['status'], text=x['text']) for x in docs]
+    #Document.objects.bulk_create(entries, batch_size=BATCH_SIZE)
+    for doc in docs:
+        Document.objects.get_or_create(doc)
+
+    return
 
 def num_docs_to_proc():
     return Document.objects.filter(status__exact=0).count()

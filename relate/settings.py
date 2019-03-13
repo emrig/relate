@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+DOC_DIR = './documents/'
+
 # Types of entities to extract
 TYPES = ['PERSON', 'ORGANIZATION', 'LOCATION']
 
@@ -20,10 +22,13 @@ CLUSTER_PAGE_SIZE = 20
 
 # Number of documents to feed to Stanford NER at a time + store in DB
 NER_BATCH_SIZE = 500
+FILE_READ_BATCH_SIZE = 10000
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+CLUSTERING_ALGORITHM = 'lev_slide'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
