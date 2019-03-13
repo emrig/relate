@@ -123,7 +123,11 @@ $(document).ready(function() {
 function removeEntity(id) {
     for( var i = 0; i < selectedEntities.length; i++){
        if ( parseInt(selectedEntities[i].id) === parseInt(id)) {
-         selectedEntities.splice(i, 1)
+         if (selectedEntities.length == 1) {
+             selectedEntities = []
+         } else {
+             selectedEntities.splice(i, 1)
+         }
        }
     }
     $(`#button-${id}`).remove()
@@ -134,6 +138,12 @@ function removeEntity(id) {
 
 function addEntity(entity) {
     selectedEntities.push(entity);
+}
+
+function addEntities(entities) {
+    entities.forEach(function (entity) {
+        selectedEntities.push(entity)
+    })
 }
 
 function addEntityButtons() {
