@@ -8,7 +8,8 @@
     {% block pagecontent %}
     <!-- Begin Page Content -->
     {% load static %}
-    <script src="{%  static "js/datatabes.js" %}"></script>
+    <script src="{%  static "js/datatables.js" %}"></script>
+    <script src="{%  static "js/EntitySelection.js" %}"></script>
     <script>
         entities = ({{ document.selected_entities | safe }})
     </script>
