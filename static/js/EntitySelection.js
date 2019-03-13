@@ -57,18 +57,6 @@ $(document).ready(function() {
         }
         ]});
 
-    $('#entitySelectTable tbody').on( 'click', 'button', function () {
-        var row = entitySelectTable.row( $(this).parents('tr') ).data();
-        const name = row[0]
-        const type = row[2]
-        const id = row[3]
-
-        const entity = {id: id, name: name, type: type}
-
-        addEntity(entity)
-        addEntityButtons()
-    });
-
     documentTable = $('#documentTable').DataTable({
         "paging": true,
         "serverSide": true,
@@ -102,6 +90,18 @@ $(document).ready(function() {
             }
         ]});
 
+    $('#entitySelectTable tbody').on( 'click', 'button', function () {
+        var row = entitySelectTable.row( $(this).parents('tr') ).data();
+        const name = row[0]
+        const type = row[2]
+        const id = row[3]
+
+        const entity = {id: id, name: name, type: type}
+
+        addEntity(entity)
+        addEntityButtons()
+    });
+
     $('#tableButtonGroup button').on('click', function() {
         var thisBtn = $(this);
         var value = thisBtn.val();
@@ -116,7 +116,9 @@ $(document).ready(function() {
         window.location = `document?file_name=${fileName}&path=${path}`
     });
 
-    addEntityButtons()
+    if (selectedEntities.length > 0) {
+        addEntityButtons()
+    }
 
 });
 
@@ -138,12 +140,6 @@ function removeEntity(id) {
 
 function addEntity(entity) {
     selectedEntities.push(entity);
-}
-
-function addEntities(entities) {
-    entities.forEach(function (entity) {
-        selectedEntities.push(entity)
-    })
 }
 
 function addEntityButtons() {
