@@ -129,6 +129,8 @@ def document_view(request):
         doc = Document.objects.get(path=path)
     else:
         doc = Document.objects.all()[0]
+        ret['document']['path'] = doc.path
+        ret['document']['file_name'] = doc.file_name
 
     ret['document']['text'] = doc.text
     ret['document']['entities'] = [EntitySerializer(entity) for entity in doc.entity_set.all()]
