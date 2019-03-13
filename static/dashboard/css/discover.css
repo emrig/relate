@@ -1,0 +1,31 @@
+.entity-button{
+margin: 3px;
+}
+
+.btn:focus,.btn:active {
+   outline: none !important;
+   box-shadow: none;
+}
+
+#doc-text {
+   white-space: pre-wrap;
+
+}
+
+#doc-viewport {
+   background-color: white;
+   padding: 10px;
+   border-style: solid;
+   border-color: rgba(169,169,169,0.63);
+   border-width: 2px;
+   max-height: 700px;
+    overflow-y: auto;
+   font-family: "Times New Roman", Times, serif;
+   color: black;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+}
