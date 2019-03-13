@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from datetime import datetime
-from worker.load_docs_from_dir import get_file_paths, get_file_text
+from worker.load_docs_from_dir import get_new_docs, get_file_text
 from worker.queries import insert_docs
 from relate.settings import DOC_DIR, FILE_READ_BATCH_SIZE, TYPES, CLUSTERING_ALGORITHM
 from discover.models import Entity, Cluster, Document
@@ -8,6 +8,7 @@ from worker import queries
 import os
 from worker.worker import parse
 from worker.resolution import Clustering
+from time import sleep
 
 class Command(BaseCommand):
     help = 'works'
@@ -17,11 +18,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         directory = os.path.abspath(DOC_DIR)
-        print(f'Scanning Documents in {directory}', kwargs['status'])
+        print(f'Scanning Documents in {directory}')
 
+        # Wait for db to initialize
+        sleep(5)
 
         t1 = datetime.now()
-        docs = get_file_paths(directory)
+        docs = get_new_docs(directory)
 
         while len(docs) > 0:
             batch = docs[:FILE_READ_BATCH_SIZE]
@@ -31,7 +34,7 @@ class Command(BaseCommand):
 
             t2 = datetime.now()
             insert_docs(batch)
-            print('Batch size', FILE_READ_BATCH_SIZE, 'took:', datetime.now() - t2)
+            print('Document insertion batch size', FILE_READ_BATCH_SIZE, 'took:', datetime.now() - t2)
 
         print(datetime.now() - t1)
 

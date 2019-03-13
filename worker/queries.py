@@ -16,7 +16,7 @@ def insert_docs(docs):
     #Document.objects.bulk_create(entries, batch_size=BATCH_SIZE)
     for doc in docs:
         obj, created = Document.objects.get_or_create(
-            path=doc['path'], file_name=doc['file_name'], status=doc['status'], text=doc['text'])
+            path=doc['path'], file_name=doc['file_name'], defaults={'status': doc['status'], 'text': doc['text']})
     return
 
 def num_docs_to_proc():
@@ -36,8 +36,9 @@ def get_doc_counts():
     for code, message in _doc_status_map.items():
         count = Document.objects.filter(status=code).count()
         total += count
-        result[code] = count
+        result[message] = count
     result['total'] = total
+    result['total_processing'] = result['Pending'] + result['Processing']
     return result
 
 @transaction.atomic
