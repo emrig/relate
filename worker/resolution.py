@@ -56,7 +56,6 @@ class Clustering:
 
         self.all_entities = sorted(self.counts.keys())
 
-        # TODO: remove
         t1 = datetime.now()
         self.cluster()
         self._reduce()

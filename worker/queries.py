@@ -102,6 +102,7 @@ def merge_cluster(cluster, name, type):
         parent.save()
     else:
         parent = Entity.objects.filter(type=type).filter(name=name).get()
+        documents += parent.documents.all()
 
     for entity in cluster.entities.all():
         if entity == parent:
@@ -110,6 +111,7 @@ def merge_cluster(cluster, name, type):
         obj = ChildEntity(name=entity.name, type=entity.type, entity=parent)
         obj.save()
         entity.delete()
+
     # Drop any duplicates
     documents = list(set(documents))
     parent.documents.set(documents)
