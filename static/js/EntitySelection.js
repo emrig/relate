@@ -54,6 +54,10 @@ $(document).ready(function() {
         {
             name: 'id',
             visible: false
+        },
+        {
+            name: 'full_name',
+            visible: false
         }
         ]});
 
@@ -92,7 +96,7 @@ $(document).ready(function() {
 
     $('#entitySelectTable tbody').on( 'click', 'button', function () {
         var row = entitySelectTable.row( $(this).parents('tr') ).data();
-        const name = row[0]
+        const name = row[4]
         const type = row[2]
         const id = row[3]
 
