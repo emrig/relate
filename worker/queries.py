@@ -236,3 +236,13 @@ def get_clusters_for_table(columns, order, start_idx, page_size, search_term, ty
     clusters = clusters.order_by(f'{order_dir}{order_by}').all()[start_idx: end_idx]
 
     return recordsTotal, recordsFiltered, clusters
+
+@transaction.atomic
+def add_cluster_counts():
+    for cluster in Cluster.objects.all():
+        count = 0
+        for entity in cluster.entities.all():
+            count += entity.documents.all().count()
+        cluster.count = count
+        cluster.save()
+    return True

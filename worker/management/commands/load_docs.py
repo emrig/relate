@@ -11,53 +11,63 @@ from worker.resolution import Clustering
 from time import sleep
 
 class Command(BaseCommand):
-    help = 'works'
+    help = ''
 
     def add_arguments(self, parser):
-        parser.add_argument('status', type=int, help='Indicates the number of users to be created')
+        parser.add_argument('actions', type=str, help='Indicates the number of users to be created')
 
     def handle(self, *args, **kwargs):
-        directory = os.path.abspath(DOC_DIR)
-        print(f'Scanning Documents in {directory}')
+
+        actions = str(kwargs['actions']).split(',')
+
+        print('Actions:', ', '.join(actions))
 
         # Wait for db to initialize
-        sleep(5)
+        sleep(10)
 
-        t1 = datetime.now()
-        docs = get_new_docs(directory)
+        if 'load' in actions:
+            directory = os.path.abspath(DOC_DIR)
+            print(f'Scanning Documents in {directory}')
 
-        while len(docs) > 0:
-            batch = docs[:FILE_READ_BATCH_SIZE]
-            docs = docs[FILE_READ_BATCH_SIZE:]
+            t1 = datetime.now()
+            docs = get_new_docs(directory)
 
-            batch = get_file_text(batch)
+            while len(docs) > 0:
+                batch = docs[:FILE_READ_BATCH_SIZE]
+                docs = docs[FILE_READ_BATCH_SIZE:]
 
-            t2 = datetime.now()
-            insert_docs(batch)
-            print('Document insertion batch size', FILE_READ_BATCH_SIZE, 'took:', datetime.now() - t2)
+                batch = get_file_text(batch)
 
-        print(datetime.now() - t1)
+                t2 = datetime.now()
+                insert_docs(batch)
+                print('Document insertion batch size', FILE_READ_BATCH_SIZE, 'took:', datetime.now() - t2)
 
-        print('Extracting entities from documents..')
+            print(datetime.now() - t1)
 
-        parse()
+        if 'extract' in actions:
+            print('Extracting entities from documents..')
+            parse()
 
-        t1 = datetime.now()
+        if 'cluster' in actions:
+            t1 = datetime.now()
 
-        for type in TYPES:
-            print('Resolving names of type', type)
-            algorithm = CLUSTERING_ALGORITHM
+            for type in TYPES:
+                print('Resolving names of type', type)
+                algorithm = CLUSTERING_ALGORITHM
 
-            # Get document counts
-            entities = Entity.objects.all().filter(type=type, visible=True).prefetch_related('documents')
-            entities = [(entity, (entity.name, len(entity.documents.all()))) for entity in entities]
+                # Get entity names
+                entities = Entity.objects.all().filter(type=type, visible=True)
+                entities = [(entity, (entity.name, 0)) for entity in entities]
 
-            # Create cluster object
-            clustering = Clustering(algorithm=algorithm, type=type)
-            clusters = clustering.get_clusters(entities=entities)
+                # Create cluster object
+                clustering = Clustering(algorithm=algorithm, type=type)
+                clusters = clustering.get_clusters(entities=entities)
 
-            # Remove clusters of same type, then delete
-            Cluster.objects.filter(type=type, algorithm=algorithm).delete()
-            queries.insert_clusters(clusters)
+                # Remove clusters of same type, then delete
+                Cluster.objects.filter(type=type, algorithm=algorithm).delete()
+                queries.insert_clusters(clusters)
 
-        print(datetime.now() - t1)
+            # add counts of total documents in cluster. Faster to do this after clustering.
+            queries.add_cluster_counts()
+
+            print(datetime.now() - t1)

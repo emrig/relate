@@ -35,7 +35,7 @@ def entity_table_api(request):
     ret['draw'] = args['draw']
     ret['recordsTotal'] = recordsTotal
     ret['recordsFiltered'] = recordsFiltered
-    ret['data'] = [[x.name, x.total, x.type, x.id] for x in data]
+    ret['data'] = [[_make_entity_url(EntitySerializer(x).data), x.total, x.type, x.id] for x in data]
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -83,7 +83,8 @@ def cluster_table_api(request):
     ret['recordsFiltered'] = recordsFiltered
 
     data = json.loads(json.dumps([ClusterSerializer(cluster).data for cluster in clusters]))
-    ret['data'] = [[', '.join([entity['name'] for entity in x['entities']]), x['count'], x['type'], x['id']] for x in data]
+    ret['data'] = [
+        ['<br>'.join([_make_entity_url(entity) for entity in x['entities']]), x['count'], x['type'], x['id']] for x in data]
 
     return HttpResponse(json.dumps(ret), content_type='application/json')
 
@@ -92,7 +93,6 @@ class PersonCreateView(CreateView):
     fields = ('alias', 'type')
 
 @api_view(['GET'])
-#@renderer_classes((JSONRenderer,))
 def dashboard_view(request):
     # Returns statistics about the document workspace
     ret = {}
@@ -173,3 +173,6 @@ def delete_entities(request):
     result = Entity.objects.filter(id__in=ids).update(visible=False)
 
     return HttpResponse('SUCCESS')
+
+def _make_entity_url(entity):
+    return f"<a href='entity?id={entity['id']}&name={entity['name']}&type={entity['type']}'>{entity['name']}</a>"
