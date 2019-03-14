@@ -29,7 +29,7 @@ services:
     networks: [ 'dev' ]
     links:
       - "db:database"
-    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py load_docs 0"'
+    command: 'bash -c "python manage.py makemigrations && python manage.py migrate && python -u manage.py load_docs load,extract,cluster"'
 
   backend:
     image: workerbase:latest
