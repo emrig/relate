@@ -39,7 +39,6 @@ class Clustering:
 
     def get_clusters(self, entities):
         # drop duplicates and get entity counts
-        #all_entities = [x[0] for x in list(set(entities))]
 
         self.obj_map = {}
         self.counts = Counter()
