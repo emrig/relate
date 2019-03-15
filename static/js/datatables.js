@@ -9,7 +9,7 @@ $(document).ready(function() {
     "processing": true,
       order: [[ 1, "desc" ]],
     "ajax": {
-          url: "entity/api",
+          url: "entity/api/pure",
       type: "post",
       datatype: "json",
       data: function(d){

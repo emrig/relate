@@ -248,3 +248,29 @@ def add_cluster_counts():
         cluster.count = count
         cluster.save()
     return True
+
+@transaction.atomic
+def get_entities(columns, order, start_idx, page_size, search_term, type, parents=None):
+    end_idx = start_idx + page_size
+    order_by = columns[order['column']]['name']
+    order_dir = '-' if order['dir'] == 'desc' else ''
+    recordsTotal = Entity.objects.filter(visible=True).all().count()
+
+    if parents:
+        parents = list(set(parents))
+        query = Entity.objects.filter(id__in=parents).annotate(total=Count('documents'))
+    else:
+        query = Entity.objects.filter(visible=True).annotate(total=Count('documents'))
+
+    if search_term:
+        query = query.filter(name__icontains=search_term)
+
+    if type:
+        query = query.filter(type=type)
+
+    query = query.order_by(f'{order_dir}{order_by}')
+
+    recordsFiltered = query.all().count()
+    entities = query.all()[start_idx: end_idx]
+
+    return recordsTotal, recordsFiltered, entities

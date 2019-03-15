@@ -22,6 +22,7 @@ urlpatterns = [
     path('', dashboard_view, name='dashboard'),
     path('entity', entity_view, name='entity'),
     path('entity/api', entity_table_api, name='entity_api'),
+    path('entity/api/pure', entity_api, name='entity_pure_api'),
     path('document/api', document_table_api, name='document_api'),
     path('entity/related', get_related_entities, name='related_entities'),
     path('entity/delete', delete_entities, name='delete_entities'),

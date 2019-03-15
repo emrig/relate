@@ -177,3 +177,26 @@ def delete_entities(request):
 
 def _make_entity_url(entity):
     return f"<a href='entity?id={entity['id']}&name={entity['name']}&type={entity['type']}'>{entity['name']}</a>"
+
+@api_view(['POST'])
+def entity_api(request):
+    args = json.loads(request.data.get("args"))
+
+    search_term = args['search']['value']
+    start_idx = args['start']
+    page_size = args['length']
+    order = args['order'][0]
+    type = args.get('type', None)
+    columns = args.get('columns')
+    parents = args.get('parents', None)
+
+    recordsTotal, recordsFiltered, data = \
+        queries.get_entities(columns, order, start_idx, page_size, search_term, type, parents)
+
+    ret = {}
+    ret['draw'] = args['draw']
+    ret['recordsTotal'] = recordsTotal
+    ret['recordsFiltered'] = recordsFiltered
+    ret['data'] = [[_make_entity_url(EntitySerializer(x).data), x.total, x.type, x.id, x.name] for x in data]
+
+    return HttpResponse(json.dumps(ret), content_type='application/json')
