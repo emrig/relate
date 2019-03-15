@@ -21,13 +21,9 @@ def get_new_docs(parent):
 def get_file_paths(parent):
     docs = []
     for file_or_folder in os.listdir(parent):
-        skip = False
         path = os.path.abspath(os.path.join(parent, file_or_folder))
-        for ignore_file in IGNORE_FILES:
-            if ignore_file == file_or_folder:
-                print('Skipping:', path)
-                skip = True
-        if skip:
+        if file_or_folder in IGNORE_FILES:
+            print('Skipping:', path)
             continue
         if os.path.isfile(path):
             docs.append({'file_name': file_or_folder, 'path': path})
