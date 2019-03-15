@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from datetime import datetime
 from worker.load_docs_from_dir import get_new_docs, get_file_text
 from worker.queries import insert_docs
-from relate.settings import DOC_DIR, FILE_READ_BATCH_SIZE, TYPES, CLUSTERING_ALGORITHM
+from relate.settings import DOC_DIR, FILE_READ_BATCH_SIZE, TYPES, CLUSTERING_ALGORITHMS
 from discover.models import Entity, Cluster, Document
 from worker import queries
 import os
@@ -52,20 +52,20 @@ class Command(BaseCommand):
             t1 = datetime.now()
 
             for type in TYPES:
-                print('Resolving names of type', type)
-                algorithm = CLUSTERING_ALGORITHM
+                for algorithm in CLUSTERING_ALGORITHMS:
+                    print('Resolving names of type', type, 'using algorithm', algorithm)
 
-                # Get entity names
-                entities = Entity.objects.all().filter(type=type, visible=True)
-                entities = [(entity, (entity.name, 0)) for entity in entities]
+                    # Get entity names
+                    entities = Entity.objects.all().filter(type=type, visible=True)
+                    entities = [(entity, (entity.name, 0)) for entity in entities]
 
-                # Create cluster object
-                clustering = Clustering(algorithm=algorithm, type=type)
-                clusters = clustering.get_clusters(entities=entities)
+                    # Create cluster object
+                    clustering = Clustering(algorithm=algorithm, type=type)
+                    clusters = clustering.get_clusters(entities=entities)
 
-                # Remove clusters of same type, then delete
-                Cluster.objects.filter(type=type, algorithm=algorithm).delete()
-                queries.insert_clusters(clusters)
+                    # Remove clusters of same type, then delete
+                    Cluster.objects.filter(type=type, algorithm=algorithm).delete()
+                    queries.insert_clusters(clusters)
 
             # add counts of total documents in cluster. Faster to do this after clustering.
             queries.add_cluster_counts()

@@ -28,10 +28,9 @@ FILE_READ_BATCH_SIZE = 10000
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-CLUSTERING_ALGORITHM = 'lev_slide'
+CLUSTERING_ALGORITHMS = ['lev_slide']
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+IGNORE_FILES = ['.gitignore']
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i)r(1+jftx_m)+fi^3kp#zjt@j-*oi(3r=ew(za7$bnbbi5n$4'
@@ -140,7 +139,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

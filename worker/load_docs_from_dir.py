@@ -1,6 +1,7 @@
 import os
 import multiprocessing as mp
 from discover.models import Document
+from relate.settings import IGNORE_FILES
 """
     Main. Loads docs from directory (for now) and calls the Extraction and store pipeline
 """
@@ -20,7 +21,14 @@ def get_new_docs(parent):
 def get_file_paths(parent):
     docs = []
     for file_or_folder in os.listdir(parent):
+        skip = False
         path = os.path.abspath(os.path.join(parent, file_or_folder))
+        for ignore_file in IGNORE_FILES:
+            if ignore_file == file_or_folder:
+                print('Skipping:', path)
+                skip = True
+        if skip:
+            continue
         if os.path.isfile(path):
             docs.append({'file_name': file_or_folder, 'path': path})
         else:
