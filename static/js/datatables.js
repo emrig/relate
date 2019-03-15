@@ -47,12 +47,16 @@ $(document).ready(function() {
         {
             name: 'id',
             visible: false
+        },
+        {
+            name: 'full_name',
+            visible: false
         }
 
     ]});
   $('#topTable tbody').on( 'click', 'button', function () {
         var row = topTable.row( $(this).parents('tr') ).data();
-        const name = row[0]
+        const name = row[4]
         const type = row[2]
         const id = row[3]
         window.location = `entity?id=${id}&name=${name}&type=${type}`
