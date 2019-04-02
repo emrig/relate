@@ -6,6 +6,22 @@
 
 Relate is a document analysis tool designed for journalists. The goal of Relate is to lift the burden of manually identifying the who and where within a document set through Named Entity Extraction (NER), focusing solely on identifying the people, organizations, and locations within a collection of documents, also known as the corpus. Relationships between these entities are recorded by identifying the documents they appear in together then arranged for the user to navigate through in a simple user interface.
 
+## Screenshots
+
+### Relationship View
+
+<div align="center">
+  <img src="https://github.com/emrig/relate/blob/master/static/images/entity.png"><br>
+</div>
+
+
+### Name Resolution (Clustering)
+
+<div align="center">
+  <img src="https://github.com/emrig/relate/blob/master/static/images/cluster.png"><br>
+</div>
+
+
 **Install instructions**
 
 
